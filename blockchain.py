@@ -36,20 +36,25 @@ class BlockChain(object):
             'timestamp': time(),
             'merkel_root': '',
             'proof': proof,
+            'transactions': self.pending_transactions,
+            #Input of previous_hash necessary for genesis block / cryptographically linking the previous block
             'previous_hash': previous_hash or self.calculate_hash(self.chain[-1]),
         }
         if(len(self.pending_transactions) != 0):
+            #Calculation of merkel root for the two transactions in the block
             block['merkel_root'] = self.calculate_hash(self.calculate_hash(self.pending_transactions[0]) + self.calculate_hash(self.pending_transactions[1]))
+        #Confirming the pending_transactions
         for i in self.pending_transactions:
             self.complete_transactions.append(i)
         self.pending_transactions = []
+        #Appending block to the list
         self.chain.append(block)
         return block
     
     def create_block(self):
         print("\nCreating a new block by Process of Leader Selection using Elapsed Time : ")
-    # generate random number scaled to number of seconds in 1min
-    # (1*60) = 60
+        # generate random number scaled to number of seconds in 1min
+        # (1*60) = 60
         minTime=61
         for node in blockchain.elapsedTime_dictobj:
             #change 60 here accordingly to change the time range.
@@ -61,7 +66,7 @@ class BlockChain(object):
             
             time_string = '%02d:%02d:%02d' % (hours, minutes, seconds)
             blockchain.elapsedTime_dictobj[node]= time_string
-
+            # Keeping track of the node with minimum wait tiem
             if minTime>rtime:
                 minTime=rtime
                 leadernode=node
@@ -78,20 +83,26 @@ class BlockChain(object):
 
      #Validating the blockchain.
     def chain_valid(self):
+        #Starting with the genesis block
         previous_block = self.chain[0]
         block_index = 1
 
         while block_index < len(self.chain):
+            #Current block
             block = self.chain[block_index]
+            #Recalulating the hash of the previous block and matching it with the previous block hash 
             if block['previous_hash'] != self.calculate_hash(previous_block):
                 return False
             block_index += 1
+            #Assigning the previous block variable to current block
             previous_block = block
         return True  
 
 
     def add_Transaction(self, buyerID, sellerID, propertyID, amount):
-            if(int(buyerID) in self.dict_obj) and (int(sellerID) == 0 or (int(sellerID) in self.dict_obj)) and (int(sellerID) == 0 or int(propertyID) in self.property_owner) and (int(sellerID) == 0 or self.property_owner[int(propertyID)] == int(sellerID)):  
+        #Checking if Buyer and Seller and property are be registered, seller should own the property he wants to sell
+            if(int(buyerID) in self.dict_obj) and (int(buyerID) != int(sellerID))and (int(sellerID) == 0 or (int(sellerID) in self.dict_obj)) and (int(sellerID) == 0 or int(propertyID) in self.property_owner) and (int(sellerID) == 0 or self.property_owner[int(propertyID)] == int(sellerID)):  
+                #Checking if Buyer has sufficient amount to buy the property
                 if(int(sellerID) == 0 or self.dict_obj[int(buyerID)] >= float(amount)):
                     Transaction = {
                         'buyerID': buyerID,
@@ -113,6 +124,9 @@ class BlockChain(object):
                     return
             elif(int(buyerID) not in self.dict_obj or int(sellerID) not in self.dict_obj):
                 print('Buyer / seller not registered, register them first')
+                return
+            elif(int(buyerID) == int(sellerID)):
+                print('Transaction failed: A user cannot be buyer and seller at the same time')
                 return
             elif(int(propertyID) not in self.property_owner):
                 print('Transaction failed: Property not registered under any user')
@@ -155,6 +169,7 @@ class BlockChain(object):
             if  u['userId'] == userId:
                 print('User already present')
                 return
+        
         User = {
             'userId' : userId,
             'userName': userName,
@@ -162,8 +177,11 @@ class BlockChain(object):
         }
         #signing the key for user verification
         msg= (userId + userName).encode()
+        #Generating a random key as user's private key
         private_key = SigningKey.generate()
+        #Corresponding companion key
         public_key = private_key.verifying_key
+        #Signing the msg with user's private key
         sign = private_key.sign(msg)
 
         #validating the Node using public key
@@ -177,16 +195,19 @@ class BlockChain(object):
             print("\nNew Node details added.\n")
         else:
             print("Invalid node\n")
+        #Registering the properties preowned by user
         check = 1
         while(check == 1):
-            print('Enter properties in possesion, press ! if you have no more properties left: ')
+            print('Enter id of the property in possesion, press ! if you have no more properties left: ')
             inp = input()
             if(inp =='!'):
                 check = 0
                 break
+            #If property is registered before, print error
             elif(int(inp) in self.property_owner):
                 print('Failed: Property already exists')
             else:
+                #Create a dummy transaction to register the property under the user
                 self.add_Transaction(userId, 0, inp, 0)
                 self.property_owner[int(inp)] = int(userId)
 
@@ -204,7 +225,11 @@ class BlockChain(object):
     def transaction_history(self):
         print('Enter the propertyID to see the transaction history')
         propID = input()
+        if(int(propID) not in self.property_owner):
+            print('Invalid propertyID')
+            return
         print('Confirmed Transactions: ')
+        #Searching for the property ID in the list of complete and pending transactions
         for i in self.complete_transactions:
             if i['propertyID'] == propID:
                 print(i)
@@ -232,8 +257,9 @@ while(loop == 1):
     elif(c == 4):
         blockchain.display_blockchain()
         blockchain.display_Users()
-        print('Balances of users: \n')
+        print('Balances of users: ')
         print(blockchain.dict_obj)
+        print('Owners of properties:')
         print(blockchain.property_owner)
     elif(c == 5):
         if blockchain.chain_valid() == True:
