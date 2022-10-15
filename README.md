@@ -6,6 +6,8 @@ time - for generating timestamps and random time and sleep function<br/>
 hashlib - for using SHA256 to hash the block<br/>
 json - to convert the format of the message<br/>
 
+Install ecdsa using `pip install ecdsa`
+
 ## Problem statement: 
  You buy a piece of land. Someone else claims to own the land. But the one who sold you the land
 showed you the paperwork. The land registry office earlier said that the owner was rightful. Now
