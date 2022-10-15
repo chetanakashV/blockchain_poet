@@ -1,10 +1,10 @@
 ### Libraries and Installations needed: 
-random - for using random library to assign random time values for each node with in a given specified time
-ecdsa (Elliptic Curve Digital SIgnature Algorithm) - to create public and private keys for validating the new nodes
-sqlite3 - for storing user details and modifying according to transactions
-time - for generating timestamps and random time and sleep function
-hashlib - for using SHA256 to hash the block
-json - to convert the format of the message
+random - for using random library to assign random time values for each node with in a given specified time<br/>
+ecdsa (Elliptic Curve Digital SIgnature Algorithm) - to create public and private keys for validating the new nodes<br/>
+sqlite3 - for storing user details and modifying according to transactions<br/>
+time - for generating timestamps and random time and sleep function<br/>
+hashlib - for using SHA256 to hash the block<br/>
+json - to convert the format of the message<br/>
 
 ## Problem statement: 
  You buy a piece of land. Someone else claims to own the land. But the one who sold you the land
