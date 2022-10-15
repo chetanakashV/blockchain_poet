@@ -78,7 +78,7 @@ class BlockChain(object):
         print("\nNodes sleeping (Time elapsing).....")
         sleep(float(minTime))
         #Reward for miner
-        self.dict_obj[leadernode] += 69.0
+        self.dict_obj[leadernode] += 50.0
         print("\nCreating new block")
         blockchain.new_block(minTime)
 
