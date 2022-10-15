@@ -57,7 +57,7 @@ Later this news is broadcasted to the remaining nodes. (In our implementation, t
 <br/>
 
 ## Description of functions: 
-  1. Reg_User() - This is a function used to take inputs from the user and validate. 
+  1. Reg_User() - This is a function used to take inputs from the user and validate. <br/>
     1. add_User(userId, userName, balance) - Adds the user and his properties to the users list. 
       1. validate_User(publickey, signature, userId, userName) - verifies the values of hash.  
   2. Transact() - This is a function used to take buyerId, sellerId, propertyId from the user. 
