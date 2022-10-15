@@ -58,6 +58,7 @@ class BlockChain(object):
         minTime=61
         for node in blockchain.elapsedTime_dictobj:
             #change 60 here accordingly to change the time range.
+            ####################################IMPLEMENTATION OF POET##########################################
             rtime = int(random.random()*10)
 
             hours   = int(rtime/3600)
@@ -146,9 +147,6 @@ class BlockChain(object):
         for i in self.chain:
             print(i)
 
-    def verify_transactions(self):
-        pass
-
     def validate_user(self,public_key, signature, userId, userName):
         print("New Node is being validated before joining the other verified nodes...")
         #node verification
@@ -169,7 +167,9 @@ class BlockChain(object):
             if  u['userId'] == userId:
                 print('User already present')
                 return
-        
+        self.add_User(userId, userName, balance)
+    
+    def add_User(self, userId, userName, balance):
         User = {
             'userId' : userId,
             'userName': userName,
