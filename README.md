@@ -1,3 +1,10 @@
+## Group information: 
+Vishnu Praneeth Palavali - 2020A7PS0126H <br/>
+Chetan  Akash Vankadara -  2020A7PS2196H <br/>
+Srikanth Mangipudi -       2020A8PS1162H <br/>
+Ch Sree Nihitha -          2020B4TS1384H <br/>
+
+
 ### Libraries and Installations needed: 
 random - for using random library to assign random time values for each node with in a given specified time<br/>
 ecdsa (Elliptic Curve Digital SIgnature Algorithm) - to create public and private keys for validating the new nodes<br/>
