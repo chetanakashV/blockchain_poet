@@ -5,7 +5,7 @@ Srikanth Mangipudi -       2020A8PS1162H <br/>
 Ch Sree Nihitha -          2020B4TS1384H <br/>
 
 
-### Libraries and Installations needed: 
+### Libraries Used: 
 random - for using random library to assign random time values for each node with in a given specified time<br/>
 ecdsa (Elliptic Curve Digital SIgnature Algorithm) - to create public and private keys for validating the new nodes<br/>
 sqlite3 - for storing user details and modifying according to transactions<br/>
@@ -13,6 +13,9 @@ time - for generating timestamps and random time and sleep function<br/>
 hashlib - for using SHA256 to hash the block<br/>
 json - to convert the format of the message<br/>
 
+### Installations:
+
+Install pip using `npm install pip`
 Install ecdsa using `pip install ecdsa`
 
 ## Problem statement: 
@@ -21,6 +24,7 @@ showed you the paperwork. The land registry office earlier said that the owner w
 they say that they made a mistake – it was owned by the other person. You already paid for the
 land – to the first person. The First person goes missing, how does anyone prove who changed
 the land record?
+To prevent such errors the whole land management system should be shifted to a tamper-proof and evident system like blockchain
 
 ## Features: 
 1. New users can be registered with previously owned property. <br/>
@@ -35,9 +39,9 @@ BuyerId, SellerId, PropertyId/name, Amount, Time stamp of the transaction. <br/>
 ### Structure of a block in blockchain: 
 Timestamp, Merkle root, Hash of the previous block, Transactions(2), Proof, block index. <br/>
 
-## Directions to use the BlockChain: 
-To execute run python3 blockchain.py <br/> 
-You will be given 6 options (1 to 6): Enter <br/>
+## Directions to use: 
+To execute, run python3 blockchain.py <br/> 
+You have 6 options (1 to 6): Enter <br/>
 '1' to register a new node and continue entering his properties. <br/>
 '2' to create a transaction (Make sure there are two or more nodes before making a transaction) <br/>
 '3' to check the transaction history of the property <br/>
@@ -50,9 +54,9 @@ A node  which wants to join the verified nodes has to be validated and it is don
 <br/>
 The node forwards this key when requesting to join the network. The nodes that are already a part of the network verify this key.
 <br/>
-To select the leader of the nodes, or the node which creates the block which is linked to the existing blockchain, PoET algorithm initializes all the with a random time; the first one whose time expires becomes the winner. This means that it creates a new block. (Fairness of Algorithm is based on the randomness of the timers given to the nodes in this process.)
+To select the leader of the nodes, or the node which adds the block to the chain, in PoET algorithm assigns random times to all the nodes. All the nodes sleep till their assigned times.The first one whose time expires is the winner/leader. The leader adds the new block (Fairness of Algorithm is based on the randomness of the timers given to the nodes in this process.) and gets the mining reward.
 <br/>
-Later this news is broadcasted to the remaining nodes. (In our implementation, to indicate the receiving of this news, we have reset the random time values of all the nodes to zero.)
+The transactions in the block are confirmed.
 
 <br/>
 
