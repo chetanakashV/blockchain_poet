@@ -36,7 +36,7 @@ You will be given 6 options (1 to 6): Enter <br/>
 '5' to verify the blockchain (valid or not) <br/>
 '6' to exit from the blockchain <br/> <br/>
 
----------------------------------------------------------------PoET Code Explanation---------------------------------------------------------------<br/>
+---------------------------------------------------PoET Code Explanation---------------------------------------------------<br/>
 A node  which wants to join the verified nodes has to be validated and it is done by creating private and public keys using the ECDSA library.
 <br/>
 The node forwards this key when requesting to join the network. The nodes that are already a part of the network verify this key.
