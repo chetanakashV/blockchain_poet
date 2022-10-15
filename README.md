@@ -6,12 +6,12 @@ Ch Sree Nihitha -          2020B4TS1384H <br/>
 
 
 ### Libraries Used: 
-random - for using random library to assign random time values for each node with in a given specified time<br/>
-ecdsa (Elliptic Curve Digital SIgnature Algorithm) - to create public and private keys for validating the new nodes<br/>
-sqlite3 - for storing user details and modifying according to transactions<br/>
-time - for generating timestamps and random time and sleep function<br/>
-hashlib - for using SHA256 to hash the block<br/>
-json - to convert the format of the message<br/>
+random - for using random library to assign random time values for each node with in a given specified time<br/><br/>
+ecdsa (Elliptic Curve Digital SIgnature Algorithm) - to create public and private keys for validating the new nodes<br/><br/>
+sqlite3 - for storing user details and modifying according to transactions<br/><br/>
+time - for generating timestamps and random time and sleep function<br/><br/>
+hashlib - for using SHA256 to hash the block<br/><br/>
+json - to convert the format of the message<br/><br/>
 
 ### Installations:
 
@@ -49,7 +49,7 @@ You have 6 options (1 to 6): Enter <br/>
 '5' to verify the blockchain (valid or not) <br/>
 '6' to exit from the blockchain <br/> <br/>
 
-----------------------------------------PoET Code Explanation----------------------------------<br/>
+## PoET Algorithm<br/>
 A node  which wants to join the verified nodes has to be validated and it is done by creating private and public keys using the ECDSA library.
 <br/>
 The node forwards this key when requesting to join the network. The nodes that are already a part of the network verify this key.
