@@ -61,16 +61,16 @@ The transactions in the block are confirmed.
 <br/>
 
 ## Description of functions: 
-  1. Reg_User() - This is a function used to take inputs from the user and validate. <br/>
-    1. add_User(userId, userName, balance) - Adds the user and his properties to the users list. 
-      1. validate_User(publickey, signature, userId, userName) - verifies the values of hash.  
-  2. Transact() - This is a function used to take buyerId, sellerId, propertyId from the user. 
-     1. add_Transact(buyerId, sellerId, propID, amount) - validates the transactions and adds it to pending list if it is correct. 
-  3. transaction_history() - This function shows all the previous transactions. 
+  1. Reg_User() - The function takes inputs(userid, name etc) from the user and checks if the user is already registered. <br/>
+    1. add_User(userId, userName, balance) - Adds the user and his properties to the registered users list. 
+      1. validate_User(publickey, signature, userId, userName) - A node in the network verifies the new user's credentials by decrypting the user's message with the public key.  
+  2. Transact() - This function takes buyerId, sellerId, propertyId as keyboard input. 
+     1. add_Transact(buyerId, sellerId, propID, amount) - validates the transaction and adds it to pending list if it is valid. 
+  3. transaction_history() - This function shows all the previous transactions of a particular property. 
   4. display_blockchain() - This function is used to display all the blocks of the transaction. 
-  5. chain_valid() - This function is used to check whether the blockchain is valid or not. 
-  6. create_block() - Allots random times to each of the nodes and sleep for the minimum time (of the nodes) and calls new_block
-    1. new_block(proof, prevhash = none) - calculate merkle roots and creates the block with index , timestamp, transactions, merkle root, proof, prevhash and cryptographically links it to previous block 
+  5. chain_valid() - This function is used to check whether the blockchain is valid or not. The hash of a block is calculated and compared with the next block's 'previous_hash' attribute for all the blocks
+  6. create_block() - In this function we allot random times to each of the nodes and the function sleeps for a time (minium waiting time of the nodes) and calls new_block, the miner is rewarded
+    1. new_block(proof, prevhash = none) - In this functin we calculate merkle root and create a block with index , timestamp, transactions, merkle root, proof, prevhash and cryptographically link it to the previous block 
       1. calcate_hash(arg) - encrypts the given argument with SHA-256 and returns the hash value. 
       
   7. display_users() - This functions shows all the nodes.  
