@@ -1,210 +1,243 @@
 import hashlib
 import json
+from time import time
+from time import sleep
+import sqlite3 as sl
+from ecdsa import SigningKey
 import random
-import time
-import datetime
-from uuid import uuid4
-class Dexter_Blockchain(object):
+
+leadernode = ''
+#No of transactions in a block = 2
+class BlockChain(object):
+
+    dict_obj={}
+    elapsedTime_dictobj={}
+    property_owner={}
+    global leadernode
     def __init__(self):
-        #Initially the chain is empty
         self.chain = []
-        #The current transactions go into this list
-        self.current_transactions = []
-        #Stores the amount each participant has in the blockchain
-        self.balance = []
-        #All the validated transactions go into this list
-        self.validated_transactions = []
-        self.flag = 0
-        self.fog = 0
-        self.indi = 0
-        self.mine = 0
-        self.minimum = 1000000
-    def new_block(self,previous_hash=None):
-        if(len(self.chain)==0):
-            #Creates the genesis block
-                block = {
-                'index':len(self.chain) + 1,
-                'timestamp':datetime.datetime.now(),
-                'transactions':self.validated_transactions[:3],
-                'previous_hash':0
-            }
-                self.chain.append(block)
-                del self.validated_transactions [:3]
-                #Reset the list of transactions 
-                self.current_transactions = []
-                print("This is the new block that got created!!")
-                print(block)
+        self.pending_transactions = []
+        self.complete_transactions = []
+        self.Users = []
+        self.new_block(100, "Gensis block")
 
-        else:
-        #Creates a new block and adds it to the chain.
-             block = {
-                'index':len(self.chain) + 1,
-                'timestamp':datetime.datetime.now(),
-                'transactions':self.validated_transactions[:3],
-                'previous_hash':hash(self.chain[-1])
-            }
-             self.chain.append(block)
-             del self.validated_transactions [:3]
-            #Reset the list of transactions 
-             self.current_transactions = []
-             print("This is the new block that got created!!")
-             print(block)
-    def Customers_Data(self):
-        self.mine = 0
-        #We store the data of who owns how much in the list
-        try:
-            Participant = str(input("Enter the name of the participant: "))
-            fund = float(input("Enter the value of currency you own: "))
-            self.balance.append({
-                            'Participant':Participant,
-                            'Balance': fund,
-                            }
-                        )
-            self.mine = 1
-        except:
-            #If the user enters wrong format of the input
-            print("Enter the correct format of data!")
-    def Print_Customers_data(self):
-        #Prints the data of the currency each participant has
-        for index in range(len(self.balance)):
-                for key in self.balance[index]:
-                    print(self.balance[index][key])
+    def calculate_hash(self, hh):
+        string_object = json.dumps(hh, sort_keys=True)
+        trans_string = string_object.encode()
 
+        raw_hash = hashlib.sha256(trans_string)
+        hex_hash = raw_hash.hexdigest()
 
-    def create_transaction(self):
-        self.mine = 0
-        #Taking the inputs of the transaction data
-        try:
-            sender = str(input("Enter the name of the sender: "))
-            recepient = str(input("Enter the name of the receiver: "))
-            amount = float(input("Enter the amount to be transferred: "))
-            self.current_transactions.append({
-                        #Transaction ID is a random number generated for the unique identification of the transaction
-                        'Transaction_ID':str(uuid4()).replace('-', ''),
-                        'Timestamp':datetime.datetime.now(),
-                        'Sender':sender,
-                        'Recipient':recepient,
-                        'Amount': amount,
-                    })
-            print("The transaction is added to the current pool of transactions")
-            print("........validating the following transaction")
-            self.mine = 1
-        except:
-                #If the user does not enter the correct format of data
-                print("Enter the correct format of data!!")
+        return hex_hash
+
+    def new_block(self, proof, previous_hash=None):
+        block = {
+            'index': len(self.chain) + 1,
+            'timestamp': time(),
+            'merkel_root': '',
+            'proof': proof,
+            'previous_hash': previous_hash or self.calculate_hash(self.chain[-1]),
+        }
+        if(len(self.pending_transactions) != 0):
+            block['merkel_root'] = self.calculate_hash(self.calculate_hash(self.pending_transactions[0]) + self.calculate_hash(self.pending_transactions[1]))
+        for i in self.pending_transactions:
+            self.complete_transactions.append(i)
+        self.pending_transactions = []
+        self.chain.append(block)
+        return block
+    
+    def create_block(self):
+        print("\nCreating a new block by Process of Leader Selection using Elapsed Time : ")
+    # generate random number scaled to number of seconds in 1min
+    # (1*60) = 60
+        minTime=61
+        for node in blockchain.elapsedTime_dictobj:
+            #change 60 here accordingly to change the time range.
+            rtime = int(random.random()*10)
+
+            hours   = int(rtime/3600)
+            minutes = int((rtime - hours*3600)/60)
+            seconds = rtime - hours*3600 - minutes*60
             
-    def validate_transaction(self):
-        self.flag = 0
-        #We search for the sender in the customer's list 
-        for high in range(len(self.balance)):
-                    if(self.current_transactions[-1]["Sender"]==self.balance[high]["Participant"]):
-                        for low in range(len(self.balance)):
-                            #We search for the recipient in the customer's list
-                            if(self.current_transactions[-1]["Recipient"]==self.balance[low]["Participant"]):
-                                #If the amount to be transferred is less than the sender's balance, the transaction is invalidated
-                                if(self.current_transactions[-1]["Amount"]>self.balance[high]["Balance"]):
-                                    self.flag = 0;
-                                    print("This transaction is invalid")
-                                else:
-                                   #If the amount to be transferred is more than the sender's balance,the transaction is validated and the required operations take place
-                                    self.balance[high]["Balance"]-=self.current_transactions[-1]["Amount"]
-                                    self.flag  = 1
-                                    self.balance[low]["Balance"]+=self.current_transactions[-1]["Amount"]
-                                    self.validated_transactions.append(self.current_transactions[-1])
-                                    print("The transaction with the transaction ID " + self.current_transactions[-1]["Transaction_ID"] + " is validated")
-       
-                           
- #Proof of Elapsed time consensus algorithm uses a random timer based lottery system in order to decide the participant for the creation of the block.
-    def Create_Timer(self):
-            #Assigning a random timer to each of the nodes in the network
-            self.minimum = 1000000
-            for i in range(len(self.balance)):
-                #Generating a random number using the random package of Python.We consider the number(wait time) to be between 30 and 300 seconds.
-                n=random.randint(10,50)
-                self.balance[i]['wait-time'] = n
-                #Finding out the minimum wait time 
-                self.minimum = min(self.minimum,n)
-            #All the nodes go to sleep according to their wait time.As the one who wakes up first gets elected,we need the timer to go to sleep for the minimum wait time.
-            print("Acheiving consensus.........................")
-            #We keep the program to sleep for the specified minimum wait time in order to know the leader
-            time.sleep(self.minimum)
-    def Print_Leader(self):
-            #We find the participant who got the least wait time
-            for i in range(len(self.balance)):
-                if(self.balance[i]['wait-time']==self.minimum):
-                    print(self.balance[i]['Participant'],"has the least wait time and is elected as the leader for this round of consensus.")
-   
-  
-   
-#Used to validate the blockchain
-def chain_valid(self,chain):
-        previous_block = chain[0]
+            time_string = '%02d:%02d:%02d' % (hours, minutes, seconds)
+            blockchain.elapsedTime_dictobj[node]= time_string
+
+            if minTime>rtime:
+                minTime=rtime
+                leadernode=node
+
+        print("\nDisplaying random times (in range of 1min) assigned to each node : ")
+        print(blockchain.elapsedTime_dictobj)
+
+        print("\nNodes sleeping (Time elapsing).....")
+        sleep(float(minTime))
+        #Reward for miner
+        self.dict_obj[leadernode] += 69.0
+        print("\nCreating new block")
+        blockchain.new_block(minTime)
+
+     #Validating the blockchain.
+    def chain_valid(self):
+        previous_block = self.chain[0]
         block_index = 1
-        while block_index < len(chain):
-            block = chain[block_index]
-            #Compare the hash of the previous block and the attribute of the previous hash in the present block 
-            if block['previous_hash'] != self.hash(previous_block):
+
+        while block_index < len(self.chain):
+            block = self.chain[block_index]
+            if block['previous_hash'] != self.calculate_hash(previous_block):
                 return False
+            block_index += 1
             previous_block = block
-            block_index+=1
-        return True
+        return True  
 
-def hash(block):
-        #Creating a SHA-256 hash of a block
-        #We must make sure that the dictionary is ordered,or we will have inconsistent hashes
-        block_string = json.dumps(block,sort_keys = True,default=str).encode()
-        return hashlib.sha256(block_string).hexdigest()
-@property
-def last_block(self):
-        #Returns the last block in the chain
-        return self.chain[-1]
 
-blockchain = Dexter_Blockchain()
-menu = {}
-menu['1']="Add a new node to the blockchain network" 
-menu['2']="Create a new transaction"
-menu['3']="Print the data of who owns how much"
-menu['4']= "Print the existing blocks"
-menu['5'] = "Exit the program"
-while True: 
-        options=menu.keys()
-        print("Hello Dexter!!!!!!!")
-        for choice in options: 
-            print (choice,menu[choice])
-        selection = input("Select the required operation:")
-        if selection == '1':
-            blockchain.Customers_Data()
-            if(blockchain.mine==1):
-                print("The following person was successfully added to the network")
-        elif selection == '2':
-            blockchain.create_transaction()
-            if(blockchain.mine == 1):
-                blockchain.validate_transaction()
-                wish = input("Do you want the receipt of this transaction?  Yes/No  ")
-                if(wish.capitalize()=="Yes"):
-                        print(blockchain.validated_transactions[-1])
+    def add_Transaction(self, buyerID, sellerID, propertyID, amount):
+            if(int(buyerID) in self.dict_obj) and (int(sellerID) == 0 or (int(sellerID) in self.dict_obj)) and (int(sellerID) == 0 or int(propertyID) in self.property_owner) and (int(sellerID) == 0 or self.property_owner[int(propertyID)] == int(sellerID)):  
+                if(int(sellerID) == 0 or self.dict_obj[int(buyerID)] >= float(amount)):
+                    Transaction = {
+                        'buyerID': buyerID,
+                        'sellerID': sellerID,
+                        'propertyID': propertyID,
+                        'amount': amount,
+                        'timeStamp': time(),
+                    }
+                    self.pending_transactions.append(Transaction)
+                    self.dict_obj[int(buyerID)] -= float(amount)
+                    self.property_owner[int(propertyID)] = int(buyerID)
+                    if(len(self.pending_transactions) < 2):
+                        return Transaction
+                    else:
+                        #create block
+                        self.create_block()
                 else:
-                        print("Thank you and visit again!")
-           
-    #Since the capacity of each block is three transactions 
-            if(len(blockchain.validated_transactions)>=3):
-                if(len(blockchain.chain)==0):
-                    #Creating a Genesis Block
-                    blockchain.Create_Timer()
-                    blockchain.Print_Leader()
-                    blockchain.new_block()
-                else:
-                    blockchain.Create_Timer()
-                    blockchain.Print_Leader()
-                    blockchain.new_block()
+                    print('Transaction failed: Insuffiecient balance')
+                    return
+            elif(int(buyerID) not in self.dict_obj or int(sellerID) not in self.dict_obj):
+                print('Buyer / seller not registered, register them first')
+                return
+            elif(int(propertyID) not in self.property_owner):
+                print('Transaction failed: Property not registered under any user')
+                return
+            elif(self.property_owner[int(propertyID)] != int(sellerID)):
+                print("Transaction failed: Seller doesn't own the property")
+                return
+            
 
-      
+    def display_Users(self):
+        print('\nUsers: ')
+        for i in self.Users:
+            print(i)
+    
+    def display_blockchain(self):
+        print('\nBlocks: ')
+        for i in self.chain:
+            print(i)
 
-        elif selection=='3':
-            blockchain.Print_Customers_data()
-        elif selection=='4':
-            print(blockchain.chain)
-        elif selection=='5':
-            break
+    def verify_transactions(self):
+        pass
+
+    def validate_user(self,public_key, signature, userId, userName):
+        print("New Node is being validated before joining the other verified nodes...")
+        #node verification
+        msg=(userId + userName).encode()
+        res = public_key.verify(signature, msg)
+        print("Verified:", res )
+        return res
+
+    def Reg_User(self):
+        print('Enter User id: ')
+        userId = input()
+        print('Enter User name: ')
+        userName = input()
+        print('Enter User amount: ')
+        balance = input()
+        #Check if user is already present
+        for u in self.Users:
+            if  u['userId'] == userId:
+                print('User already present')
+                return
+        User = {
+            'userId' : userId,
+            'userName': userName,
+            'balance': balance,
+        }
+        #signing the key for user verification
+        msg= (userId + userName).encode()
+        private_key = SigningKey.generate()
+        public_key = private_key.verifying_key
+        sign = private_key.sign(msg)
+
+        #validating the Node using public key
+        if(self.validate_user(public_key, sign, userId, userName) is True):
+
+            self.Users.append(User)
+            #insert userId and balance in Bloackchain's dictionary object
+            blockchain.dict_obj[int(userId)]=float(balance)
+            blockchain.elapsedTime_dictobj[int(userId)]=0
+
+            print("\nNew Node details added.\n")
         else:
-            print("Invalid option selected!")
+            print("Invalid node\n")
+        check = 1
+        while(check == 1):
+            print('Enter properties in possesion, press ! if you have no more properties left: ')
+            inp = input()
+            if(inp =='!'):
+                check = 0
+                break
+            elif(int(inp) in self.property_owner):
+                print('Failed: Property already exists')
+            else:
+                self.add_Transaction(userId, 0, inp, 0)
+                self.property_owner[int(inp)] = int(userId)
+
+    def Transact(self):
+        print('Enter the buyerID')
+        buyerID = input()
+        print('Enter the sellerID')
+        sellerID = input()
+        print('Enter propertyID')
+        propID = input() 
+        print('Enter the amount')
+        amount = input()
+        self.add_Transaction(buyerID, sellerID, propID, amount)
+
+    def transaction_history(self):
+        print('Enter the propertyID to see the transaction history')
+        propID = input()
+        print('Confirmed Transactions: ')
+        for i in self.complete_transactions:
+            if i['propertyID'] == propID:
+                print(i)
+        print('Pending Transactions: ')
+        for i in self.pending_transactions:
+            if i['propertyID'] == propID:
+                print(i)
+        
+
+    
+
+blockchain = BlockChain()
+loop =1
+while(loop == 1):
+    print('\nEnter 1 for registration, 2 to create a transaction, 3 to check transaction history of a property, 4 to display the blockchain, 5 to verify the blockchain, 6 to exit')
+    c = int(input())
+    if(c == 6):
+        loop = 0
+    elif(c == 1):
+        blockchain.Reg_User()
+    elif(c == 2):
+        blockchain.Transact()
+    elif(c == 3):
+        blockchain.transaction_history()
+    elif(c == 4):
+        blockchain.display_blockchain()
+        blockchain.display_Users()
+        print('Balances of users: \n')
+        print(blockchain.dict_obj)
+        print(blockchain.property_owner)
+    elif(c == 5):
+        if blockchain.chain_valid() == True:
+            print('Blockchain is valid')
+        else:
+            print('Blockchain is not valid')
+    
