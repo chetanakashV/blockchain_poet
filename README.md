@@ -55,3 +55,11 @@ To select the leader of the nodes, or the node which creates the block which is 
 Later this news is broadcasted to the remaining nodes. (In our implementation, to indicate the receiving of this news, we have reset the random time values of all the nodes to zero.)
 
 <br/>
+
+## Description of functions: 
+  1. Reg_User() - This is a function used to register new nodes and their pre registered properties. 
+  2. Transact()
+  3. transaction_history()
+  4. display_blockchain()
+  5. chain_valid()
+  6. 
