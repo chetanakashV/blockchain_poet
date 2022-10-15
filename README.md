@@ -57,9 +57,17 @@ Later this news is broadcasted to the remaining nodes. (In our implementation, t
 <br/>
 
 ## Description of functions: 
-  1. Reg_User() - This is a function used to register new nodes and their pre registered properties. 
-  2. Transact()
-  3. transaction_history()
-  4. display_blockchain()
-  5. chain_valid()
-  6. 
+  1. Reg_User() - This is a function used to take inputs from the user and validate. 
+    1. add_User(userId, userName, balance) - Adds the user and his properties to the users list. 
+      1. validate_User(publickey, signature, userId, userName) - verifies the values of hash.  
+  2. Transact() - This is a function used to take buyerId, sellerId, propertyId from the user. 
+     1. add_Transact(buyerId, sellerId, propID, amount) - validates the transactions and adds it to pending list if it is correct. 
+  3. transaction_history() - This function shows all the previous transactions. 
+  4. display_blockchain() - This function is used to display all the blocks of the transaction. 
+  5. chain_valid() - This function is used to check whether the blockchain is valid or not. 
+  6. create_block() - Allots random times to each of the nodes and sleep for the minimum time (of the nodes) and calls new_block
+    1. new_block(proof, prevhash = none) - calculate merkle roots and creates the block with index , timestamp, transactions, merkle root, proof, prevhash and cryptographically links it to previous block 
+      1. calcate_hash(arg) - encrypts the given argument with SHA-256 and returns the hash value. 
+      
+  7. display_users() - This functions shows all the nodes.  
+ 
