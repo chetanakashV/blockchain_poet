@@ -36,7 +36,7 @@ To prevent such errors the whole land management system should be shifted to a t
 BuyerId, SellerId, PropertyId/name, Amount, Time stamp of the transaction. <br/>
 
 ### Structure of a block in blockchain: 
-Timestamp, Merkle root, Hash of the previous block, Transactions(2), Proof, block index. <br/>
+Timestamp, Merkle root, Hash of the previous block, Transactions(2), Nonce, block index. <br/>
 
 ## Directions to use: 
 To execute, run python3 blockchain.py <br/> 
