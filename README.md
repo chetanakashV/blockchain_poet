@@ -15,7 +15,6 @@ json - to convert the format of the message<br/><br/>
 
 ### Installations:
 
-Install pip using `npm install pip`
 Install ecdsa using `pip install ecdsa`
 
 ## Problem statement: 
@@ -71,7 +70,7 @@ The transactions in the block are confirmed.
   5. chain_valid() - This function is used to check whether the blockchain is valid or not. The hash of a block is calculated and compared with the next block's 'previous_hash' attribute for all the blocks
   6. create_block() - In this function we allot random times to each of the nodes and the function sleeps for a time (minium waiting time of the nodes) and calls new_block, the miner is rewarded
     1. new_block(proof, prevhash = none) - In this functin we calculate merkle root and create a block with index , timestamp, transactions, merkle root, proof, prevhash and cryptographically link it to the previous block 
-      1. calcate_hash(arg) - encrypts the given argument with SHA-256 and returns the hash value. 
+      1. calculate_hash(arg) - encrypts the given argument with SHA-256 and returns the hash value. 
       
   7. display_users() - This functions shows all the nodes.  
  
